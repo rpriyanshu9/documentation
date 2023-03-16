@@ -262,12 +262,16 @@ def process_nodes(node):
         # remove footer reference links
         # content = re.sub(r"^\s*\[(\d*?)\]: (\S*)", "", content, 0, re.MULTILINE)
         start_line, end_line = 0, 0
+        prev_line_non_link = True
         for ln, line in enumerate(node.lines):
             if re.search(r"^\s*\[(\d*?)\]: (\S*)", line):
-                if start_line:
-                    end_line = ln + 1
-                else:
+                if prev_line_non_link:
                     start_line = ln
+                else:
+                    end_line = ln + 1
+                prev_line_non_link = False
+            else:
+                prev_line_non_link = True
 
         # inline existing footer reference links
         for reference_index, reference_val in all_references.items():

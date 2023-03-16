@@ -580,6 +580,54 @@ class TestProcessNodes(unittest.TestCase):
         expected = ''.join(node.lines)
         self.assertEqual(actual, expected)
 
+    def test_footlinks_amongst_text_retains_all_content(self):
+        node = Node('root')
+        node.lines = [
+            '#### Programmatic Management\n',
+            'The instructions on this page outline the process to configure the Azure Native integration through the Azure Portal. If you prefer programmatic options, you can also leverage:\n',
+            '- [Azure CLI for Datadog][62]\n'
+            '- [Azure Terraform Provider for Datadog][63] (make sure to include the [Role assignment block][64])\n',
+            'If you have many subscriptions you want to monitor with the Azure Native integration, Datadog recommends using Terraform to create the Datadog resources. To learn about configuring Terraform across multiple subscriptions, see this blog post about [Deploying to multiple Azure subscriptions using Terraform][65].\n',
+            '\n',
+            '[62]: https://docs.microsoft.com/en-us/cli/azure/datadog?view=azure-cli-latest\n',
+            '[63]: https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/datadog_monitors\n',
+            '[64]: https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/datadog_monitors#role-assignment\n',
+            '[65]: https://medium.com/codex/deploying-to-multiple-azure-subscriptions-using-terraform-81249a58a600\n',
+            '\n',
+            '#### Create Datadog resource\n',
+            'To start monitoring an Azure subscription, navigate to the [Datadog Service page in Azure][8] and select the option to create a new Datadog resource:\n',
+            '{{< img src="integrations/azure/azure-us3-dd-service.png" alt="Azure US3 Datadog Service" responsive="true" style="width:90%;">}}\n',
+            '\n',
+            '[8]: https://www.google.com\n'
+        ]
+        process_nodes(node)
+        expected = [
+            '#### Programmatic Management\n',
+            'The instructions on this page outline the process to configure the Azure '
+            'Native integration through the Azure Portal. If you prefer programmatic '
+            'options, you can also leverage:\n',
+            '- [Azure CLI for Datadog][2]\n',
+            '- [Azure Terraform Provider for Datadog][3] (make sure to include the [Role '
+            'assignment block][4])\n',
+            'If you have many subscriptions you want to monitor with the Azure Native '
+            'integration, Datadog recommends using Terraform to create the Datadog '
+            'resources. To learn about configuring Terraform across multiple '
+            'subscriptions, see this blog post about [Deploying to multiple Azure '
+            'subscriptions using Terraform][5].\n',
+            '\n',
+            '#### Create Datadog resource\n',
+            'To start monitoring an Azure subscription, navigate to the [Datadog Service page in Azure][8] and select the option to create a new Datadog resource:\n',
+            '{{< img src="integrations/azure/azure-us3-dd-service.png" alt="Azure US3 Datadog Service" responsive="true" style="width:90%;">}}\n',
+            '\n',
+            '[1]: https://portal.azure.com/#blade/HubsExtension/BrowseResource/resourceType/Microsoft.Datadog%2Fmonitors\n',
+            '[2]: https://docs.microsoft.com/en-us/cli/azure/datadog?view=azure-cli-latest\n',
+            '[3]: https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/datadog_monitors\n',
+            '[4]: https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/datadog_monitors#role-assignment\n',
+            '[5]: https://medium.com/codex/deploying-to-multiple-azure-subscriptions-using-terraform-81249a58a600\n',
+            '[8]: https://www.google.com\n'
+        ]
+        self.assertEqual(expected, node.modified_lines)
+
 
 class TestFormatLinkFile(unittest.TestCase):
 
