@@ -35,16 +35,16 @@ class ContextFilter(logging.Filter):
 
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
-
-# log colored streams
-stream_handler = logging.StreamHandler(stream=sys.stdout)
-stream_handler.setFormatter(Formatter())
-stream_handler.setLevel(logging.INFO)
-logger.addHandler(stream_handler)
-
+logger.propagate = False
 f = ContextFilter()
 logger.addFilter(f)
+
+if not logger.handlers:
+    # log colored streams
+    stream_handler = logging.StreamHandler(stream=sys.stdout)
+    stream_handler.setFormatter(Formatter())
+    stream_handler.setLevel(logging.INFO)
+    logger.addHandler(stream_handler)
 
 # log only debug messages to file in ci
 if os.getenv("CI_COMMIT_REF_NAME"):
