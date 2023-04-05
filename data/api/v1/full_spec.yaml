@@ -697,7 +697,8 @@ components:
       description: Cancel downtimes according to scope.
       properties:
         scope:
-          description: 'The scope(s) to which the downtime applies. For example, `host:app2`.
+          description: 'The scope(s) to which the downtime applies and must be in
+            `key:value` format. For example, `host:app2`.
 
             Provide multiple scopes as a comma-separated list like `env:dev,env:prod`.
 
@@ -1004,6 +1005,14 @@ components:
           items:
             description: A role UUID.
             type: string
+          type: array
+        tags:
+          description: List of team names representing ownership of a dashboard.
+          items:
+            description: The name of a Datadog team of the form `team:<name>`
+            type: string
+          maxItems: 5
+          nullable: true
           type: array
         template_variable_presets:
           description: Array of template variables saved views.
@@ -1742,7 +1751,8 @@ components:
         recurrence:
           $ref: '#/components/schemas/DowntimeRecurrence'
         scope:
-          description: 'The scope(s) to which the downtime applies. For example, `host:app2`.
+          description: 'The scope(s) to which the downtime applies and must be in
+            `key:value` format. For example, `host:app2`.
 
             Provide multiple scopes as a comma-separated list like `env:dev,env:prod`.
 
@@ -1876,7 +1886,8 @@ components:
         recurrence:
           $ref: '#/components/schemas/DowntimeRecurrence'
         scope:
-          description: 'The scope(s) to which the downtime applies. For example, `host:app2`.
+          description: 'The scope(s) to which the downtime applies and must be in
+            `key:value` format. For example, `host:app2`.
 
             Provide multiple scopes as a comma-separated list like `env:dev,env:prod`.
 
@@ -2681,6 +2692,7 @@ components:
       - audit
       - events
       - ci_tests
+      - ci_pipelines
       example: logs
       type: string
       x-enum-varnames:
@@ -2693,6 +2705,7 @@ components:
       - AUDIT
       - EVENTS
       - CI_TESTS
+      - CI_PIPELINES
     FormulaAndFunctionMetricAggregation:
       description: The aggregation methods available for metrics queries.
       enum:
@@ -3813,6 +3826,7 @@ components:
       - container_usage
       - cspm_containers_usage
       - cspm_hosts_usage
+      - custom_ingested_timeseries_usage
       - custom_timeseries_usage
       - cws_containers_usage
       - cws_hosts_usage
@@ -3828,9 +3842,11 @@ components:
       - invocations_usage
       - npm_host_usage
       - profiled_container_usage
+      - profiled_fargate_usage
       - profiled_host_usage
       - snmp_usage
       - estimated_rum_sessions_usage
+      - universal_service_monitoring_usage
       type: string
       x-enum-varnames:
       - API_USAGE
@@ -3843,6 +3859,7 @@ components:
       - CONTAINER_USAGE
       - CSPM_CONTAINERS_USAGE
       - CSPM_HOSTS_USAGE
+      - CUSTOM_INGESTED_TIMESERIES_USAGE
       - CUSTOM_TIMESERIES_USAGE
       - CWS_CONTAINERS_USAGE
       - CWS_HOSTS_USAGE
@@ -3858,9 +3875,11 @@ components:
       - INVOCATIONS_USAGE
       - NPM_HOST_USAGE
       - PROFILED_CONTAINER_USAGE
+      - PROFILED_FARGATE_USAGE
       - PROFILED_HOST_USAGE
       - SNMP_USAGE
       - ESTIMATED_RUM_SESSIONS_USAGE
+      - UNIVERSAL_SERVICE_MONITORING_USAGE
     IFrameWidgetDefinition:
       description: The iframe widget allows you to embed a portion of any other web
         page on your dashboard. Only available on FREE layout dashboards.
@@ -4295,8 +4314,11 @@ components:
       enum:
       - logs_stream
       - audit_stream
+      - ci_pipeline_stream
+      - ci_test_stream
       - rum_issue_stream
       - apm_issue_stream
+      - logs_issue_stream
       - logs_pattern_stream
       - logs_transaction_stream
       - event_stream
@@ -4305,8 +4327,11 @@ components:
       x-enum-varnames:
       - LOGS_STREAM
       - AUDIT_STREAM
+      - CI_PIPELINE_STREAM
+      - CI_TEST_STREAM
       - RUM_ISSUE_STREAM
       - APM_ISSUE_STREAM
+      - LOGS_ISSUE_STREAM
       - LOGS_PATTERN_STREAM
       - LOGS_TRANSACTION_STREAM
       - EVENT_STREAM
@@ -7273,6 +7298,8 @@ components:
       - cspm_hosts_usage
       - custom_timeseries_usage
       - custom_timeseries_percentage
+      - custom_ingested_timeseries_usage
+      - custom_ingested_timeseries_percentage
       - cws_containers_percentage
       - cws_containers_usage
       - cws_hosts_percentage
@@ -7301,12 +7328,16 @@ components:
       - npm_host_percentage
       - profiled_container_usage
       - profiled_container_percentage
+      - profiled_fargate_usage
+      - profiled_fargate_percentage
       - profiled_host_usage
       - profiled_host_percentage
       - snmp_usage
       - snmp_percentage
       - estimated_rum_sessions_usage
       - estimated_rum_sessions_percentage
+      - universal_service_monitoring_usage
+      - universal_service_monitoring_percentage
       - '*'
       type: string
       x-enum-varnames:
@@ -7332,6 +7363,8 @@ components:
       - CSPM_HOSTS_USAGE
       - CUSTOM_TIMESERIES_USAGE
       - CUSTOM_TIMESERIES_PERCENTAGE
+      - CUSTOM_INGESTED_TIMESERIES_USAGE
+      - CUSTOM_INGESTED_TIMESERIES_PERCENTAGE
       - CWS_CONTAINERS_PERCENTAGE
       - CWS_CONTAINERS_USAGE
       - CWS_HOSTS_PERCENTAGE
@@ -7360,12 +7393,16 @@ components:
       - NPM_HOST_PERCENTAGE
       - PROFILED_CONTAINER_USAGE
       - PROFILED_CONTAINER_PERCENTAGE
+      - PROFILED_FARGATE_USAGE
+      - PROFILED_FARGATE_PERCENTAGE
       - PROFILED_HOST_USAGE
       - PROFILED_HOST_PERCENTAGE
       - SNMP_USAGE
       - SNMP_PERCENTAGE
       - ESTIMATED_RUM_SESSIONS_USAGE
       - ESTIMATED_RUM_SESSIONS_PERCENTAGE
+      - UNIVERSAL_SERVICE_MONITORING_USAGE
+      - UNIVERSAL_SERVICE_MONITORING_PERCENTAGE
       - ALL
     MonthlyUsageAttributionValues:
       description: Fields in Usage Summary by tag(s).
@@ -7454,12 +7491,20 @@ components:
           description: The CSPM host usage by tag(s).
           format: double
           type: number
+        custom_ingested_timeseries_percentage:
+          description: The percentage of ingested custom metrics usage by tag(s).
+          format: double
+          type: number
+        custom_ingested_timeseries_usage:
+          description: The ingested custom metrics usage by tag(s).
+          format: double
+          type: number
         custom_timeseries_percentage:
-          description: The percentage of custom metrics usage by tag(s).
+          description: The percentage of indexed custom metrics usage by tag(s).
           format: double
           type: number
         custom_timeseries_usage:
-          description: The custom metrics usage by tag(s).
+          description: The indexed custom metrics usage by tag(s).
           format: double
           type: number
         cws_containers_percentage:
@@ -7583,6 +7628,14 @@ components:
           description: The profiled container usage by tag(s).
           format: double
           type: number
+        profiled_fargate_percentage:
+          description: The percentage of profiled Fargate task usage by tag(s).
+          format: double
+          type: number
+        profiled_fargate_usage:
+          description: The profiled Fargate task usage by tag(s).
+          format: double
+          type: number
         profiled_host_percentage:
           description: The percentage of profiled hosts usage by tag(s).
           format: double
@@ -7597,6 +7650,14 @@ components:
           type: number
         snmp_usage:
           description: The network device usage by tag(s).
+          format: double
+          type: number
+        universal_service_monitoring_percentage:
+          description: The percentage of universal service monitoring usage by tag(s).
+          format: double
+          type: number
+        universal_service_monitoring_usage:
+          description: The universal service monitoring usage by tag(s).
           format: double
           type: number
       type: object
@@ -15988,7 +16049,7 @@ components:
           $ref: '#/components/schemas/UsageBillableSummaryBody'
         application_security_host_sum:
           $ref: '#/components/schemas/UsageBillableSummaryBody'
-        application_security_host_top99:
+        application_security_host_top99p:
           $ref: '#/components/schemas/UsageBillableSummaryBody'
         ci_pipeline_indexed_spans_sum:
           $ref: '#/components/schemas/UsageBillableSummaryBody'
@@ -17257,6 +17318,11 @@ components:
             the current date for all organizations.
           format: int64
           type: integer
+        audit_trail_enabled_hwm:
+          description: Shows the number of organizations that had Audit Trail enabled
+            in the current date.
+          format: int64
+          type: integer
         avg_profiled_fargate_tasks:
           description: The average profiled task count for Fargate Profiling.
           format: int64
@@ -17603,6 +17669,11 @@ components:
             in the current date for all organizations.
           format: int64
           type: integer
+        universal_service_monitoring_host_top99p:
+          description: Shows the 99th percentile of all universal service management
+            hosts over all hours in the current date for the given org.
+          format: int64
+          type: integer
         vsphere_host_top99p:
           description: Shows the 99th percentile of all vSphere hosts over all hours
             in the current date for all organizations.
@@ -17641,6 +17712,11 @@ components:
         audit_logs_lines_indexed_sum:
           description: Shows the sum of all audit logs lines indexed over all hours
             in the current date for the given org.
+          format: int64
+          type: integer
+        audit_trail_enabled_hwm:
+          description: Shows whether Audit Trail is enabled for the current date for
+            the given org.
           format: int64
           type: integer
         avg_profiled_fargate_tasks:
@@ -17992,6 +18068,11 @@ components:
             in the current date for the given org.
           format: int64
           type: integer
+        universal_service_monitoring_host_top99p:
+          description: Shows the 99th percentile of all Universal Service Monitoring
+            hosts over all hours in the current date for the given org.
+          format: int64
+          type: integer
         vsphere_host_top99p:
           description: Shows the 99th percentile of all vSphere hosts over all hours
             in the current date for the given org.
@@ -18030,6 +18111,11 @@ components:
         audit_logs_lines_indexed_agg_sum:
           description: Shows the sum of all audit logs lines indexed over all hours
             in the current months for all organizations.
+          format: int64
+          type: integer
+        audit_trail_enabled_hwm_sum:
+          description: Shows the total number of organizations that had Audit Trail
+            enabled over a specific number of months.
           format: int64
           type: integer
         avg_profiled_fargate_tasks_sum:
@@ -18420,6 +18506,11 @@ components:
         twol_ingested_events_bytes_agg_sum:
           description: Shows the sum of all ingested APM span bytes over all hours
             in the current months for all organizations.
+          format: int64
+          type: integer
+        universal_service_monitoring_host_top99p_sum:
+          description: Shows the 99th percentile of all Universal Service Monitoring
+            hosts over all hours in the current months for all organizations.
           format: int64
           type: integer
         usage:
@@ -21384,6 +21475,12 @@ paths:
         required: false
         schema:
           type: boolean
+      - description: Return creator information.
+        in: query
+        name: with_creator
+        required: false
+        schema:
+          type: boolean
       responses:
         '200':
           content:
@@ -22079,14 +22176,14 @@ paths:
         name: metric_query
         schema:
           type: string
-      - description: The POSIX timestamp of the start of the query.
+      - description: The POSIX timestamp of the start of the query in seconds.
         in: query
         name: start
         required: true
         schema:
           format: int64
           type: integer
-      - description: The POSIX timestamp of the end of the query.
+      - description: The POSIX timestamp of the end of the query in seconds.
         in: query
         name: end
         required: true

@@ -22,7 +22,7 @@ further_reading:
 
 As an administrator or security team member, you can use [Datadog Audit Trail][1] to see who is using Datadog within your organization and the context in which they are using Datadog. As an individual, you can see a stream of your own actions, too.
 
-There are two types of events that can occur within an audit trail: **request events**, which translate all requests made to Datadog’s API into customer records, or **product-specific events**.
+There are two types of events that can occur within an audit trail: **request events**, which translate all requests made to Datadog's API into customer records, or **product-specific events**.
 
 For example, track **request events** so you can see what API calls led up to the event. Or, if you're an enterprise or billing admin, use audit trail events to track user events that change the state of your infrastructure.
 
@@ -178,5 +178,5 @@ Datadog Audit Trail comes with an [out-of-the-box dashboard][12] that shows vari
 [8]: /dashboards/widgets/top_list/
 [9]: /dashboards/widgets/timeseries/
 [10]: /dashboards/widgets/list/
-[11]: /dashboards/querying/#choose-the-metric-to-graph/
+[11]: /dashboards/querying/#define-the-metric/
 [12]: https://app.datadoghq.com/dash/integration/30691/datadog-audit-trail-overview?from_ts=1652452436351&to_ts=1655130836351&live=true
