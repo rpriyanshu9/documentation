@@ -651,6 +651,14 @@
     "description": "Returns a list of all permissions, including name, description, and ID.",
     "summary": "List permissions"
   },
+  "ListFindings": {
+    "description": "Get a list of CSPM findings.",
+    "summary": "List Findings"
+  },
+  "FetchFinding": {
+    "description": "Returns a single finding with message and resource configuration.",
+    "summary": "Fetch Finding"
+  },
   "ListProcesses": {
     "description": "Get all processes for your organization.",
     "summary": "Get all processes"

@@ -5962,6 +5962,32 @@ api:
         - ListSecurityFilters
       unstable: []
       order: 16
+  - name: Fetch Finding
+    url: '#fetch-finding'
+    identifier: security-monitoring-fetch-finding
+    parent: security-monitoring
+    generated: true
+    params:
+      versions:
+        - v2
+      operationids:
+        - FetchFinding
+      unstable:
+        - v2
+      order: 2
+  - name: List Findings
+    url: '#list-findings'
+    identifier: security-monitoring-list-findings
+    parent: security-monitoring
+    generated: true
+    params:
+      versions:
+        - v2
+      operationids:
+        - ListFindings
+      unstable:
+        - v2
+      order: 1
   - name: Change the triage state of a security signal
     url: '#change-the-triage-state-of-a-security-signal'
     identifier: security-monitoring-change-the-triage-state-of-a-security-signal
@@ -7277,7 +7303,7 @@ api:
       operationids:
         - GetUsageAuditLogs
       unstable: []
-      order: 40
+      order: 29
   - name: Get usage attribution
     url: '#get-usage-attribution'
     identifier: usage-metering-get-usage-attribution
